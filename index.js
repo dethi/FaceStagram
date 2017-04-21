@@ -37,7 +37,7 @@ app.get('/api/pictures', (req, res) => {
     res.sendStatus(400);
     return;
   }
-  res.json(DB.slice(idx + 1, itemPerPage));
+  res.json(DB.slice(idx + 1, idx + 1 + itemPerPage));
 });
 
 app.post('/api/pictures', (req, res) => {
