@@ -8,6 +8,9 @@ const DB = datasets.map(obj => {
     picture: obj.picture
   };
 });
+// const fs = require('fs');
+// var json = JSON.stringify(DB);
+// fs.writeFile('myjsonfile.json', json, 'utf8');
 
 const app = express();
 
@@ -26,6 +29,7 @@ app.get('/api/pictures', (req, res) => {
   if (itemPerPage === undefined) {
     itemPerPage = 10;
   }
+  itemPerPage = parseInt(itemPerPage);
 
   if (lastId === undefined) {
     res.json(DB.slice(0, itemPerPage));
