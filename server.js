@@ -1,5 +1,6 @@
 const express = require('express');
 const minify = require('express-minify');
+const shortid = require('shortid');
 
 const datasets = require('./datasets.json');
 const DB = datasets.map(obj => {
@@ -8,9 +9,11 @@ const DB = datasets.map(obj => {
     picture: obj.picture
   };
 });
-// const fs = require('fs');
-// var json = JSON.stringify(DB);
-// fs.writeFile('myjsonfile.json', json, 'utf8');
+
+function validUrl(str) {
+  const s = str.toLowerCase();
+  return s.startsWith('http://') || s.startsWith('https://');
+}
 
 const app = express();
 
@@ -25,47 +28,48 @@ app.use(express.static(__dirname + '/public'));
 app.use(logRequests);
 
 app.get('/api/pictures', (req, res) => {
-  let { lastId, itemPerPage } = req.query;
-  if (itemPerPage === undefined) {
-    itemPerPage = 10;
+  let { cursor, amount } = req.query;
+  if (amount === undefined) {
+    amount = 10;
   }
-  itemPerPage = parseInt(itemPerPage);
+  amount = parseInt(amount);
 
-  if (lastId === undefined) {
-    res.json(DB.slice(0, itemPerPage));
+  if (cursor === undefined) {
+    res.json(DB.slice(0, amount));
     return;
   }
 
-  const idx = DB.findIndex(obj => obj.id === lastId);
+  const idx = DB.findIndex(obj => obj.id === cursor);
   if (idx === -1) {
     res.sendStatus(400);
     return;
   }
-  res.json(DB.slice(idx + 1, idx + 1 + itemPerPage));
+  res.json(DB.slice(idx + 1, idx + 1 + amount));
 });
 
 app.post('/api/pictures', (req, res) => {
-  const { id, picture } = JSON.parse(req.body);
-  if (id === undefined || picture === undefined) {
-    req.sendStatus(400);
+  const { picture } = JSON.parse(req.body);
+  if (picture === undefined || !validUrl(picture)) {
+    req.sendStatus(500);
     return;
   }
 
-  DB.push({ id, picture });
-  // TODO: save file
+  const item = { id: shortid.generate(), picture };
+  DB.push(item);
+  console.log(`info: added ${item.id}`);
 });
 
 app.delete('/api/pictures/:id', (req, res) => {
-  const idx = DB.findIndex(obj => obj.id === req.param.id);
+  const idx = DB.findIndex(obj => obj.id === req.params.id);
   if (idx === -1) {
     res.sendStatus(404);
     return;
   }
 
-  DB = DB.splice(idx, 1);
-  // TODO: save file
+  DB.splice(idx, 1);
+  console.log(`info: deleted ${req.params.id}`);
 });
 
 app.listen(4242, () => {
-  console.log('App listening on port 4242');
+  console.log('App serving on http://localhost:4242');
 });
