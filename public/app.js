@@ -90,9 +90,11 @@ const fetchPictures = (cursor, amount) => {
 
 // Scroll event
 window.onscroll = () => {
-  const p =
-    window.scrollY + 1.5 * window.innerHeight >= document.body.scrollHeight;
-  if (p) {
+  const scrollPos = window.pageYOffset;
+  const pageHeight = document.documentElement.scrollHeight;
+  const clientHeight = document.documentElement.clientHeight;
+
+  if (pageHeight - (scrollPos + clientHeight) < 50) {
     fetchPictures(nextCursor, amount);
   }
 };
