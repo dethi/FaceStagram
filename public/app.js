@@ -1,3 +1,28 @@
+///////////
+// Add Form
+///////////
+
+const $form = document.getElementById('add-image');
+const $imageUrl = document.getElementById('image-url');
+
+$form.onsubmit = e => {
+  e.preventDefault();
+
+  const url = $imageUrl.value;
+  $imageUrl.value = '';
+
+  if (url !== '') {
+    fetch('/api/pictures', {
+      method: 'POST',
+      body: JSON.stringify({ picture: url }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+  return false;
+};
+
 ////////
 // Modal
 ////////

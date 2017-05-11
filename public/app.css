@@ -70,7 +70,7 @@ body {
 #modal-img, #modal-delete {
   animation-name: zoom;
   animation-timing-function: ease-out;
-  animation-duration: 0.4s;
+  animation-duration: 0.3s;
 }
 
 @keyframes zoom {
