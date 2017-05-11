@@ -7,8 +7,8 @@ yarn start
 Features:
 - add image from an URL
 - delete an image
-- hand made design (no framework!)
-- infinite scrolling (`DocumentFragment` and `onscroll`)
+- handmade design (no framework!)
+- infinite scroll (`DocumentFragment` and `onscroll`)
 
 ## Preview
 
