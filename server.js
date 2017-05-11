@@ -59,6 +59,7 @@ app.post('/api/pictures', (req, res) => {
   const item = { id: shortid.generate(), picture };
   DB.push(item);
   console.log(`info: added ${item.id}`);
+  res.sendStatus(200);
 });
 
 app.delete('/api/pictures/:id', (req, res) => {
@@ -70,6 +71,7 @@ app.delete('/api/pictures/:id', (req, res) => {
 
   DB.splice(idx, 1);
   console.log(`info: deleted ${req.params.id}`);
+  res.sendStatus(200);
 });
 
 app.listen(4242, () => {

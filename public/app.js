@@ -74,6 +74,7 @@ const fetchPictures = (cursor, amount) => {
     .then(arr => {
       if (arr.length === 0) {
         isEnd = true;
+        isFetching = false;
         return;
       }
 
