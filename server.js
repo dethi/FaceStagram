@@ -1,6 +1,7 @@
 const express = require('express');
 const minify = require('express-minify');
 const shortid = require('shortid');
+const bodyParser = require('body-parser');
 
 const datasets = require('./datasets.json');
 const DB = datasets.map(obj => {
@@ -10,22 +11,23 @@ const DB = datasets.map(obj => {
   };
 });
 
+const app = express();
+
+app.use(minify({ cache: __dirname + '/cache' }));
+app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.json());
+app.use(logRequests);
+
 function validUrl(str) {
   const s = str.toLowerCase();
   return s.startsWith('http://') || s.startsWith('https://');
 }
 
-const app = express();
-
-const logRequests = (req, res, next) => {
+function logRequests(req, res, next) {
   const { ip, method, originalUrl } = req;
   console.log(`${ip} ${method} ${originalUrl}`);
   next();
-};
-
-app.use(minify({ cache: __dirname + '/cache' }));
-app.use(express.static(__dirname + '/public'));
-app.use(logRequests);
+}
 
 app.get('/api/pictures', (req, res) => {
   let { cursor, amount } = req.query;
@@ -41,16 +43,16 @@ app.get('/api/pictures', (req, res) => {
 
   const idx = DB.findIndex(obj => obj.id === cursor);
   if (idx === -1) {
-    res.sendStatus(400);
+    res.sendStatus(404);
     return;
   }
   res.json(DB.slice(idx + 1, idx + 1 + amount));
 });
 
 app.post('/api/pictures', (req, res) => {
-  const { picture } = JSON.parse(req.body);
+  const { picture } = req.body;
   if (picture === undefined || !validUrl(picture)) {
-    req.sendStatus(500);
+    res.sendStatus(500);
     return;
   }
 
