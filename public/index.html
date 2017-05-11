@@ -7,11 +7,34 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>FaceStagram</title>
 
+    <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/app.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
+    <header class="header">
+        <form class="add">
+            <div class="add__wrapper">
+                <input type="search" name="image" placeholder="Add an image URL" autocomplete="off" required="required" class="add__input">
+
+                <button type="submit" title="Submit your URL." class="add__submit">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </form>
+    </header>
+
     <div id="gallery"></div>
+
+    <div id="modal">
+        <span id="modal-close"><i class="fa fa-2x fa-times"></i></span>
+        <img id="modal-img">
+
+        <a id="modal-delete" href="#">
+            <i class="fa fa-2x fa-trash-o"></i>
+        </a>
+    </div>
 
     <script src="/app.js" type="application/javascript"></script>
 </body>

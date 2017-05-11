@@ -1,32 +1,195 @@
 body {
-    margin: auto;
-    background-color: black;
-    width: 100%;
-    height: 100%;
+  margin: auto;
+  background-color: black;
+  width: 100%;
+  height: 100%;
 }
+
+/* Gallery */
 
 #gallery {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 40px auto;
 }
 
-figure {
-    width: 200px;
-    height: 200px;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+#gallery figure {
+  width: 200px;
+  height: 200px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 #gallery img {
-    opacity: 1;
-    transform: scale(1);
-    transition: .3s ease-in-out;
+  cursor: pointer;
+  height: 200px;
+  opacity: 1;
+  transform: scale(1);
+  transition: .3s ease-in-out;
 }
 
 #gallery img:hover {
-    opacity: 0.5;
-    transform: scale(1.3);
+  opacity: 0.5;
+  transform: scale(1.3);
+}
+
+/* Modal */
+
+#modal {
+  display: none;
+  position: fixed;
+  z-index: 200;
+  padding-top: 100px;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+#modal-img {
+  margin: auto;
+  display: block;
+  max-width: 70%;
+  max-height: 70%;
+}
+
+#modal-delete {
+  margin: 20px auto;
+  display: block;
+  text-align: center;
+  color: #ccc;
+}
+
+#modal-delete:hover {
+  color:#c0392b;
+}
+
+#modal-img, #modal-delete {
+  animation-name: zoom;
+  animation-timing-function: ease-out;
+  animation-duration: 0.4s;
+}
+
+@keyframes zoom {
+  from {transform:scale(0)}
+  to {transform:scale(1)}
+}
+
+#modal-close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  transition: 0.3s;
+}
+
+#modal-close:hover,
+#modal-close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Top bar */
+
+.header {
+  background-color: #202F40;
+  text-align: center;
+  margin: 0 0 39px;
+  padding: 0.5rem 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 15;
+}
+
+.add {
+  display: inline-block;
+  position: relative;
+  width: 600px;
+  height: 39px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.add__wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.add__input {
+  display: inline-block;
+  transition: box-shadow .4s ease, background .4s ease;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px #FFFFFF;
+  background: #FFFFFF;
+  padding: 0;
+  padding-right: 75px;
+  padding-left: 11px;
+  width: 100%;
+  height: 100%;
+  vertical-align: middle;
+  white-space: normal;
+  font-size: inherit;
+  appearance: none;
+}
+
+.add__input:hover {
+  box-shadow: inset 0 0 0 1px #e6e6e6;
+}
+
+.add__input:focus, .add__input:active {
+  outline: 0;
+  box-shadow: inset 0 0 0 1px #FFBF58;
+  background: #FFFFFF;
+}
+
+.add__input::placeholder {
+  color: #AAAAAA;
+}
+
+.add__submit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: inherit;
+  margin: 0;
+  border: 0;
+  border-radius: 0 3px 3px 0;
+  background-color: #ffbf58;
+  padding: 0;
+  width: 47px;
+  height: 100%;
+  vertical-align: middle;
+  text-align: center;
+  font-size: inherit;
+  user-select: none;
+}
+
+.add__submit::before {
+  display: inline-block;
+  margin-right: -4px;
+  height: 100%;
+  vertical-align: middle;
+  content: '';
+}
+
+.add__submit:hover, .add__submit:active {
+  cursor: pointer;
+}
+
+.add__submit:focus {
+  outline: 0;
+}
+
+.add__submit svg {
+  width: 21px;
+  height: 21px;
+  vertical-align: middle;
+  fill: #202F40;
 }

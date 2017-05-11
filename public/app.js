@@ -1,29 +1,47 @@
-const imgPerLine = Math.floor(window.innerWidth / 200);
-const rowPerView = Math.floor(window.innerHeight / 200) + 2;
-const itemPerPage = imgPerLine * rowPerView;
+////////
+// Modal
+////////
 
-let isFetching = false;
-let isEnd = false;
-let lastId = undefined;
+const $modal = document.getElementById('modal');
+const $modalImg = document.getElementById('modal-img');
+const $modalClose = document.getElementById('modal-close');
+const $modalDelete = document.getElementById('modal-delete');
 
-window.onscroll = () => {
-  const p =
-    window.scrollY + 1.5 * window.innerHeight >= document.body.scrollHeight;
-  if (p) {
-    fetchPictures(lastId, itemPerPage);
+// Close modal
+$modalClose.onclick = () => {
+  $modal.style.display = 'none';
+};
+
+// Close modal
+window.onkeydown = evt => {
+  const e = evt || window.event;
+  if (e.keyCode == 27) {
+    $modalClose.click();
   }
 };
 
-const fetchPictures = (cursor, itemPerPage) => {
+/////////////////
+// Infinit scroll
+/////////////////
+
+const imgPerLine = Math.floor(window.innerWidth / 200);
+const rowPerView = Math.floor(window.innerHeight / 200) + 2;
+const amount = imgPerLine * rowPerView;
+
+let isFetching = false;
+let isEnd = false;
+let nextCursor = undefined;
+
+const fetchPictures = (cursor, amount) => {
   if (isFetching || isEnd) {
     return;
   }
   isFetching = true;
 
   const searchParams = new URLSearchParams();
-  searchParams.append('itemPerPage', itemPerPage);
+  searchParams.append('amount', amount);
   if (cursor !== undefined) {
-    searchParams.append('lastId', cursor);
+    searchParams.append('cursor', cursor);
   }
 
   return fetch(`/api/pictures?${searchParams.toString()}`)
@@ -36,10 +54,23 @@ const fetchPictures = (cursor, itemPerPage) => {
 
       const $gallery = document.getElementById('gallery');
       const $fragment = new DocumentFragment();
-      arr.forEach(e => {
+      arr.forEach(img => {
         const $figure = document.createElement('figure');
         const $img = document.createElement('img');
-        $img.setAttribute('src', e.picture);
+        $img.setAttribute('src', img.picture);
+        $img.setAttribute('data-id', img.id);
+        $img.onclick = () => {
+          $modal.style.display = 'block';
+          $modalImg.src = $img.src;
+
+          $modalDelete.onclick = e => {
+            e.preventDefault();
+            fetch(`/api/pictures/${img.id}`, { method: 'DELETE' });
+            $img.remove();
+            $modalClose.click();
+          };
+        };
+
         $figure.appendChild($img);
         $fragment.appendChild($figure);
       });
@@ -49,7 +80,7 @@ const fetchPictures = (cursor, itemPerPage) => {
       return last === undefined ? undefined : last.id;
     })
     .then(id => {
-      lastId = id;
+      nextCursor = id;
       isFetching = false;
     })
     .catch(err => {
@@ -57,4 +88,13 @@ const fetchPictures = (cursor, itemPerPage) => {
     });
 };
 
-fetchPictures(lastId, itemPerPage);
+// Scroll event
+window.onscroll = () => {
+  const p =
+    window.scrollY + 1.5 * window.innerHeight >= document.body.scrollHeight;
+  if (p) {
+    fetchPictures(nextCursor, amount);
+  }
+};
+
+fetchPictures(nextCursor, amount);
